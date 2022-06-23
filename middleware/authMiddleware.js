@@ -10,18 +10,14 @@ export const protect = async (req, res, next) => {
             const decoded = jwt.verify(token, process.env.JWT_SECRET)
             // get user from token
             req.user = await user.findById(decoded.id)
-            // console.log(await user.findById(decoded.id));
             next()
-        } catch (e) {``
-            console.log(e);
-            res.send('wrong token21')
+        } catch (e) {
+            return res.status(403).send('wrong token')
         }
 
     }
     if (!token) {
-        res.status(401)
-        // throw new Error('lool')
-        res.send('wrong token')
+        return res.status(403).send('wrong token')
     }
 
 }

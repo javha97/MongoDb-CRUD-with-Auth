@@ -29,7 +29,8 @@ export const registerUser = async (req, res) => {
 export const loginUser = async (req, res) => {
     const { email, password } = req.body
     const _user = await user.findOne({ email })
-    if (_user && (await bcrypt.compare(password, _user.password))) {
+    const comparedPass = await bcrypt.compare(password, _user.password)
+    if (_user && comparedPass) {
         res.json({
             _id: _user.id,
             name: _user.name,
@@ -37,7 +38,7 @@ export const loginUser = async (req, res) => {
             token: generateToken(_user.id)
         })
     } else {
-        res.status(400).json('lmao')
+        res.status(400).json('Invalid information')
     }
 }
 export const getMe = async (req, res) => {
@@ -52,6 +53,6 @@ export const getMe = async (req, res) => {
 ///generate JWT
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: '30d',
+        expiresIn: '5d',
     })
 }
